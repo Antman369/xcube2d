@@ -1,4 +1,6 @@
 #include "GraphicsEngine.h"
+#include "SDL.h"
+#include "SDL_image.h"
 
 SDL_Renderer * GraphicsEngine::renderer = nullptr;
 
@@ -173,6 +175,11 @@ SDL_Texture * GraphicsEngine::createTextureFromString(const std::string & text, 
 	}
 
 	return textTexture;
+}
+
+SDL_Texture* GraphicsEngine::loadTexture(const std::string& filename)
+{
+	return IMG_LoadTexture(renderer, filename.c_str());
 }
 
 void GraphicsEngine::setDrawScale(const Vector2f & v) {

@@ -5,6 +5,8 @@
 
 #include "TestMazeGenerator.h"
 
+struct SDL_Image;
+
 struct GameKey {
 	Point2 pos;
 	bool alive;
@@ -21,6 +23,8 @@ class TestGame : public AbstractGame {
 
 		std::vector<std::shared_ptr<Line2i>> lines;
 		std::vector<std::shared_ptr<GameKey>> points;
+
+		SDL_Texture* playerSprite;
 
 		/* GAMEPLAY */
 		int score, keys, lives;

@@ -139,6 +139,7 @@ class GraphicsEngine {
 
 		static SDL_Texture * createTextureFromSurface(SDL_Surface *);
 		static SDL_Texture * createTextureFromString(const std::string &, TTF_Font *, SDL_Color);
+		static SDL_Texture* loadTexture(const std::string& filename);
 };
 
 typedef GraphicsEngine GFX;
