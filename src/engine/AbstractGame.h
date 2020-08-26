@@ -2,11 +2,16 @@
 #define __ABSTRACT_GAME_H__
 
 #include "XCube2d.h"
+#include "AchievementSystem.h"
 
 class AbstractGame {
 	private:
 		void handleMouseEvents();
 		void updatePhysics();
+		void updateAchievements();
+
+		AchievementSystem::AchievementEntry displayAchievement;
+		int displayAchievementTimer;
 
 	protected:
 		AbstractGame();

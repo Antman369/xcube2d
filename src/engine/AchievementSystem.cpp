@@ -12,12 +12,25 @@ bool AchievementSystem::gain(std::string achievementId)
 	bool newlyGained = completed.find(achievementId) == end(completed);
 	completed.insert(achievementId);
 
-#ifdef __DEBUG
 	if (newlyGained)
 	{
+		nextDisplayAchievements.push(achievements[achievementId]);
+#ifdef __DEBUG
 		debug("gained ", achievementId.c_str());
-	}
 #endif
+	}
 
 	return newlyGained;
+}
+
+bool AchievementSystem::checkNextDisplayAchievement()
+{
+	return !nextDisplayAchievements.empty();
+}
+
+AchievementSystem::AchievementEntry AchievementSystem::getNextDisplayAchievement() 
+{
+	auto result = nextDisplayAchievements.front();
+	nextDisplayAchievements.pop();
+	return result;
 }

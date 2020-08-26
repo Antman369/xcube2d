@@ -1,6 +1,8 @@
 #include "AbstractGame.h"
 
-AbstractGame::AbstractGame() : running(true), paused(false), gameTime(0.0) {
+AbstractGame::AbstractGame() : 
+	running(true), paused(false), gameTime(0.0), displayAchievementTimer(0) 
+{
 	std::shared_ptr<XCube2Engine> engine = XCube2Engine::getInstance();
 
 	// engine ready, get subsystems
@@ -50,6 +52,7 @@ int AbstractGame::runMainLoop() {
 		if (!paused) {
 			update();
 			updatePhysics();
+			updateAchievements();
 
 			gameTime += 0.016;	// 60 times a sec
 		}
@@ -78,6 +81,24 @@ void AbstractGame::updatePhysics() {
 	physics->update();
 }
 
+void AbstractGame::updateAchievements()
+{
+	if (displayAchievementTimer > 0)
+		--displayAchievementTimer;
+	else
+		if (achievements->checkNextDisplayAchievement())
+		{
+			displayAchievement = achievements->getNextDisplayAchievement();
+			displayAchievementTimer = 600;
+		}
+}
 void AbstractGame::onLeftMouseButton() {}
 void AbstractGame::onRightMouseButton() {}
-void AbstractGame::renderUI() {}
+
+void AbstractGame::renderUI() 
+{
+	if (displayAchievementTimer > 0)
+	{
+		gfx->drawText(displayAchievement.title, 250, 500);
+	}
+}
