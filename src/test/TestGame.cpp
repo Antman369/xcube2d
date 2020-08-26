@@ -44,6 +44,8 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	}
 
 	keys = 5;
+
+	achievements->set({ {"1key", {"Collector 1", "Collected 1 key"}} });
 }
 
 TestGame::~TestGame() {
@@ -92,6 +94,7 @@ void TestGame::update() {
 			score += 200;
 			key->alive = false;
 			keys--;
+			achievements->gain("1key");
 		}
 	}
 
@@ -128,4 +131,6 @@ void TestGame::renderUI() {
 
 	if (gameWon)
 		gfx->drawText("YOU WON", 250, 500);
+
+	AbstractGame::renderUI();
 }

@@ -63,6 +63,16 @@ XCube2Engine::XCube2Engine() {
 #endif
 
 	physicsInstance = std::shared_ptr<PhysicsEngine>(new PhysicsEngine());
+
+#ifdef __DEBUG
+	debug("PhysicsEngine() successful");
+#endif
+	
+	achievementInstance = std::shared_ptr<AchievementSystem>(new AchievementSystem());
+
+#ifdef __DEBUG
+	debug("AchievementSystem() successful");
+#endif
 }
 
 XCube2Engine::~XCube2Engine() {

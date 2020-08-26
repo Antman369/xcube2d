@@ -11,6 +11,7 @@
 #include "PhysicsEngine.h"
 #include "ResourceManager.h"
 #include "Timer.h"
+#include "AchievementSystem.h"
 
 const int _ENGINE_VERSION_MAJOR = 0;
 const int _ENGINE_VERSION_MINOR = 1;
@@ -22,6 +23,7 @@ class XCube2Engine {
 		std::shared_ptr<AudioEngine> audioInstance;
 		std::shared_ptr<EventEngine> eventInstance;
 		std::shared_ptr<PhysicsEngine> physicsInstance;
+		std::shared_ptr<AchievementSystem> achievementInstance;
 
 		XCube2Engine();
 	public:
@@ -47,6 +49,8 @@ class XCube2Engine {
 		std::shared_ptr<AudioEngine> getAudioEngine() { return audioInstance; }
 		std::shared_ptr<EventEngine> getEventEngine() { return eventInstance; }
 		std::shared_ptr<PhysicsEngine> getPhysicsEngine() { return physicsInstance; }
+		std::shared_ptr<AchievementSystem> getAchievementSystem() { return achievementInstance; }
+
 };
 
 typedef XCube2Engine XEngine;
