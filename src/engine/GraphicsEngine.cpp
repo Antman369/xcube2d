@@ -177,6 +177,7 @@ SDL_Texture * GraphicsEngine::createTextureFromString(const std::string & text, 
 	return textTexture;
 }
 
+//function added to allow loading of images
 SDL_Texture* GraphicsEngine::loadTexture(const std::string& filename)
 {
 	return IMG_LoadTexture(renderer, filename.c_str());

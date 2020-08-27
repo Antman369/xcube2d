@@ -1,10 +1,12 @@
 #include "AchievementSystem.h"
 
+//function to set the achievements for the specfic game
 void AchievementSystem::set(std::unordered_map<std::string, AchievementEntry> achievementList)
 {
 	achievements = achievementList;
 }
 
+//function to check if an achievement has been gained
 bool AchievementSystem::gain(std::string achievementId)
 {
 	if (achievements.find(achievementId) == end(achievements))
@@ -23,11 +25,13 @@ bool AchievementSystem::gain(std::string achievementId)
 	return newlyGained;
 }
 
+//function to check which achievement needs to be displayed next
 bool AchievementSystem::checkNextDisplayAchievement()
 {
 	return !nextDisplayAchievements.empty();
 }
 
+//function to get the achievement that needs to be displayed next
 AchievementSystem::AchievementEntry AchievementSystem::getNextDisplayAchievement() 
 {
 	auto result = nextDisplayAchievements.front();

@@ -6,6 +6,7 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	gfx->useFont(font);
 	gfx->setVerticalSync(true);
 
+	//adding image to player
 	playerSprite = gfx->loadTexture("res/assets/fish.png");
 
 	gen = new MazeGenerator(10, 10);
@@ -48,6 +49,7 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 
 	keys = 5;
 
+	//defining and adding the unique achievements
 	achievements->set({ {"1key", {"Collector 1", "Collected 1 key"}} });
 }
 
@@ -138,5 +140,6 @@ void TestGame::renderUI() {
 	if (gameWon)
 		gfx->drawText("YOU WON", 250, 500);
 
+	//call to function for displaying over the game UI
 	AbstractGame::renderUI();
 }

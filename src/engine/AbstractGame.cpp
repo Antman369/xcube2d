@@ -81,6 +81,7 @@ void AbstractGame::updatePhysics() {
 	physics->update();
 }
 
+//function to check for and display completed achievements
 void AbstractGame::updateAchievements()
 {
 	if (displayAchievementTimer > 0)
@@ -95,6 +96,7 @@ void AbstractGame::updateAchievements()
 void AbstractGame::onLeftMouseButton() {}
 void AbstractGame::onRightMouseButton() {}
 
+//function to display achievements over game UI
 void AbstractGame::renderUI() 
 {
 	if (displayAchievementTimer > 0)

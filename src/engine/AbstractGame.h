@@ -10,7 +10,9 @@ class AbstractGame {
 		void updatePhysics();
 		void updateAchievements();
 
+		//the next completed achievement to be displayed
 		AchievementSystem::AchievementEntry displayAchievement;
+		//timer to decide how long achievement is displayed for
 		int displayAchievementTimer;
 
 	protected:
