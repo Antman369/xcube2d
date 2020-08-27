@@ -3,9 +3,9 @@
 using namespace std;
 
 //function to set the achievements for the specfic game
-void AchievementSystem::add(string id, string name, string description)
+void AchievementSystem::add(string id, string title, string description)
 {
-	achievements[id] = { name, description };
+	achievements[id] = { title, description };
 }
 
 //function to check if an achievement has been gained

@@ -9,6 +9,8 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	//adding image to player
 	playerSprite = gfx->loadTexture("res/assets/cat.png");
 
+	keySprite = gfx->loadTexture("res/assets/fish.png");
+
 	gen = new MazeGenerator(10, 10);
 	gen->generateMaze(0, 0);
 
@@ -50,7 +52,8 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	keys = 5;
 
 	//defining and adding the unique achievements
-	achievements->add("1key", "Collector", "Collect 1 key");	
+	achievements->add("1fish", "Essential Energy!", "Eat 1 fish");
+	achievements->add("5fish", "Someone's Hungry!", "Eat 5 fish");
 }
 
 TestGame::~TestGame() {
@@ -123,7 +126,6 @@ void TestGame::update() {
 			score += 1;
 			key->alive = false;
 			keys--;
-			achievements->gain("1key");
 		}
 	}
 
@@ -134,6 +136,15 @@ void TestGame::update() {
 
 	if (keys == 0) {
 		gameWon = true;
+	}
+
+	if (score == 1)
+	{
+		achievements->gain("1fish");
+	}
+	if (score == 5)
+	{
+		achievements->gain("5fish");
 	}
 }
 
@@ -148,7 +159,10 @@ void TestGame::render() {
 	gfx->setDrawColor(SDL_COLOR_YELLOW);
 	for (auto key : points)
 		if (key->alive && light.contains(key->pos))
-			gfx->drawPoint(key->pos);
+		{
+			SDL_Rect dest = { key->pos.x - 16, key->pos.y - 16, 32, 32 };
+			gfx->drawTexture(keySprite, &dest);
+		}
 }
 
 void TestGame::drawPlayer()
@@ -175,7 +189,7 @@ void TestGame::renderUI() {
 	gfx->drawText(scoreStr, 780 - scoreStr.length() * 50, 25);
 
 	if (gameWon)
-		gfx->drawText("YOU WON", 250, 500);
+		gfx->drawText("YOU WON", 250, 250);
 
 	//call to function for displaying over the game UI
 	AbstractGame::renderUI();

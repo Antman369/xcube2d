@@ -17,6 +17,8 @@ class TestGame : public AbstractGame {
 		Rect box;
 		Rect light;
 
+		SDL_Texture* keySprite;
+
 		Vector2i velocity;
 		Vector2i facing;
 		SDL_Texture* playerSprite;

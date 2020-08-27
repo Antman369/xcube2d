@@ -17,7 +17,7 @@ public:
 		std::string title, description;
 	};
 
-	void add(std::string id, std::string name, std::string description);
+	void add(std::string id, std::string title, std::string description);
 
 	bool gain(std::string achievementId);
 
