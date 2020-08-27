@@ -18,21 +18,26 @@ class TestGame : public AbstractGame {
 		Rect light;
 
 		Vector2i velocity;
+		Vector2i facing;
+		SDL_Texture* playerSprite;
+		int playerAnimFrame = 0;
+		int playerAnimTimer = 0;
 
 		MazeGenerator * gen;
 
 		std::vector<std::shared_ptr<Line2i>> lines;
 		std::vector<std::shared_ptr<GameKey>> points;
 
-		SDL_Texture* playerSprite;
 
 		/* GAMEPLAY */
 		int score, keys, lives;
 		bool gameWon;
 
+		void updatePlayerFrame();
 		void handleKeyEvents();
 		void update();
 		void render();
+		void drawPlayer();
 		void renderUI();
 	public:
 		TestGame();

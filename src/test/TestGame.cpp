@@ -7,7 +7,7 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	gfx->setVerticalSync(true);
 
 	//adding image to player
-	playerSprite = gfx->loadTexture("res/assets/fish.png");
+	playerSprite = gfx->loadTexture("res/assets/cat.png");
 
 	gen = new MazeGenerator(10, 10);
 	gen->generateMaze(0, 0);
@@ -57,24 +57,48 @@ TestGame::~TestGame() {
 	delete gen;
 }
 
+void TestGame::updatePlayerFrame()
+{
+	--playerAnimTimer;
+	if (playerAnimTimer <= 0)
+	{
+		playerAnimTimer = 5;
+		++playerAnimFrame;
+		if (playerAnimFrame >= 3)
+			playerAnimFrame = 0;
+	}
+}
+
 void TestGame::handleKeyEvents() {
 	int speed = 3;
+	bool moved = false;
 
 	if (eventSystem->isPressed(Key::W)) {
 		velocity.y = -speed;
+		facing = velocity;
+		moved = true;
 	}
 
 	if (eventSystem->isPressed(Key::S)) {
 		velocity.y = speed;
+		facing = velocity;
+		moved = true;
 	}
 
 	if (eventSystem->isPressed(Key::A)) {
 		velocity.x = -speed;
+		facing = velocity;
+		moved = true;
 	}
 
 	if (eventSystem->isPressed(Key::D)) {
 		velocity.x = speed;
+		facing = velocity;
+		moved = true;
 	}
+
+	if (moved)
+		updatePlayerFrame();
 }
 
 void TestGame::update() {
@@ -119,17 +143,30 @@ void TestGame::render() {
 		if (light.intersects(*line))
 			gfx->drawLine(line->start, line->end);
 	
-
-	//gfx->setDrawColor(SDL_COLOR_RED);
-	//gfx->drawRect(box);
-	SDL_Rect spriteRect{ 0, 0, 32, 32 };
-	SDL_Rect boxRect = box.getSDLRect();
-	gfx->drawTexture(playerSprite, &spriteRect, &boxRect);
+	drawPlayer();
 
 	gfx->setDrawColor(SDL_COLOR_YELLOW);
 	for (auto key : points)
 		if (key->alive && light.contains(key->pos))
 			gfx->drawPoint(key->pos);
+}
+
+void TestGame::drawPlayer()
+{
+	int frameX = 32 * playerAnimFrame;
+	int frameY = 0;
+	if (facing.x > 0)
+		frameY = 0;
+	else if (facing.x < 0)
+		frameY = 96;
+	else if (facing.y < 0)
+		frameY = 32;
+	else
+		frameY = 64;
+
+	SDL_Rect spriteRect = { frameX, frameY, 32, 32 };
+	SDL_Rect boxRect = box.getSDLRect();
+	gfx->drawTexture(playerSprite, &spriteRect, &boxRect);
 }
 
 void TestGame::renderUI() {
