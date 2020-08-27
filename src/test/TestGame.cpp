@@ -50,7 +50,7 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	keys = 5;
 
 	//defining and adding the unique achievements
-	achievements->set({ {"1key", {"Collector 1", "Collected 1 key"}} });
+	achievements->add("1key", "Collector", "Collect 1 key");	
 }
 
 TestGame::~TestGame() {
@@ -96,7 +96,7 @@ void TestGame::update() {
 
 	for (auto key : points) {
 		if (key->alive && box.contains(key->pos)) {
-			score += 200;
+			score += 1;
 			key->alive = false;
 			keys--;
 			achievements->gain("1key");

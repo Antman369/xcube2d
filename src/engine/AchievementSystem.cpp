@@ -1,16 +1,18 @@
 #include "AchievementSystem.h"
 
+using namespace std;
+
 //function to set the achievements for the specfic game
-void AchievementSystem::set(std::unordered_map<std::string, AchievementEntry> achievementList)
+void AchievementSystem::add(string id, string name, string description)
 {
-	achievements = achievementList;
+	achievements[id] = { name, description };
 }
 
 //function to check if an achievement has been gained
-bool AchievementSystem::gain(std::string achievementId)
+bool AchievementSystem::gain(string achievementId)
 {
 	if (achievements.find(achievementId) == end(achievements))
-		throw std::out_of_range(achievementId);
+		throw out_of_range(achievementId);
 	bool newlyGained = completed.find(achievementId) == end(completed);
 	completed.insert(achievementId);
 
@@ -25,7 +27,7 @@ bool AchievementSystem::gain(std::string achievementId)
 	return newlyGained;
 }
 
-//function to check which achievement needs to be displayed next
+//function to check if there is an achievement to be displayed next
 bool AchievementSystem::checkNextDisplayAchievement()
 {
 	return !nextDisplayAchievements.empty();

@@ -11,13 +11,13 @@
 class AchievementSystem
 {
 public:
-	//data structure for all achievements attributes
+	//data structure for all achievement attributes
 	struct AchievementEntry
 	{
 		std::string title, description;
 	};
 
-	void set(std::unordered_map<std::string, AchievementEntry> achievementList);
+	void add(std::string id, std::string name, std::string description);
 
 	bool gain(std::string achievementId);
 
