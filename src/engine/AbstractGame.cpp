@@ -1,5 +1,8 @@
 #include "AbstractGame.h"
 
+static const int achievementDisplayTime = 400;
+static const int achievementPopUpTime = 60;
+
 AbstractGame::AbstractGame() : 
 	running(true), paused(false), gameTime(0.0), displayAchievementTimer(0) 
 {
@@ -90,7 +93,7 @@ void AbstractGame::updateAchievements()
 		if (achievements->checkNextDisplayAchievement())
 		{
 			displayAchievement = achievements->getNextDisplayAchievement();
-			displayAchievementTimer = 600;
+			displayAchievementTimer = achievementDisplayTime;
 		}
 }
 void AbstractGame::onLeftMouseButton() {}
@@ -101,6 +104,11 @@ void AbstractGame::renderUI()
 {
 	if (displayAchievementTimer > 0)
 	{
-		gfx->drawText(displayAchievement.title, 250, 500);
+		int y = 500;
+		if (displayAchievementTimer < achievementPopUpTime)
+			y += (achievementPopUpTime - displayAchievementTimer) * 2;
+		else if (displayAchievementTimer > achievementDisplayTime - achievementPopUpTime)
+			y += (achievementPopUpTime - (achievementDisplayTime - displayAchievementTimer)) * 2;
+		gfx->drawText(displayAchievement.title, 250, y);
 	}
 }
