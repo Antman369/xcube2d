@@ -22,3 +22,6 @@
 
 # build dir
 build/
+
+# visual studio settings folder
+.vs/
