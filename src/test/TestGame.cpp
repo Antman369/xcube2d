@@ -138,14 +138,7 @@ void TestGame::update() {
 		gameWon = true;
 	}
 
-	if (score == 1)
-	{
-		achievements->gain("1fish");
-	}
-	if (score == 5)
-	{
-		achievements->gain("5fish");
-	}
+	checkAchievements();
 }
 
 void TestGame::render() {
@@ -193,4 +186,17 @@ void TestGame::renderUI() {
 
 	//call to function for displaying over the game UI
 	AbstractGame::renderUI();
+}
+
+//function to check if conditions for achievements are met
+void TestGame::checkAchievements()
+{
+	if (score == 1)
+	{
+		achievements->gain("1fish");
+	}
+	if (score == 5)
+	{
+		achievements->gain("5fish");
+	}
 }
