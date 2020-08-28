@@ -34,7 +34,8 @@ class TestGame : public AbstractGame {
 
 		/* GAMEPLAY */
 		int score, keys, lives, level;
-		bool gameWon;
+		//bool to check if the player has moved, to use in animation
+		bool moved = false;
 
 		void updatePlayerFrame();
 		void handleKeyEvents();

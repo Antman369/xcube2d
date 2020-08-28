@@ -3,7 +3,7 @@
 
 TestGame::TestGame() :
 	AbstractGame(), score(0), lives(3), keys(5), level(1),
-	gameWon(false), box(5, 5, 30, 30), light(0, 0, 150, 150), gen(nullptr) {
+	box(5, 5, 30, 30), light(0, 0, 150, 150), gen(nullptr) {
 	TTF_Font * font = ResourceManager::loadFont("res/fonts/arial.ttf", 36);
 	gfx->useFont(font);
 	gfx->setVerticalSync(true);
@@ -19,6 +19,10 @@ TestGame::TestGame() :
 	//defining and adding the unique achievements
 	achievements->add("1fish", "Essential Energy!", "Eat 1 fish");
 	achievements->add("5fish", "Someone's Hungry!", "Eat 5 fish");
+	achievements->add("15fish", "Fat Cat!", "Eat 15 fish");
+	achievements->add("Moved", "First Steps!", "Started to walk");
+	achievements->add("Level1", "Freedom!", "Completed Level 1");
+	achievements->add("Level5", "You're good at this!", "Completed Level 5");
 }
 
 void TestGame::genLevel()
@@ -33,6 +37,7 @@ void TestGame::genLevel()
 	gen = new MazeGenerator(mazeW, mazeH);
 	gen->generateMaze(0, 0);
 	
+	keys = 5;
 	int dist = 40;
 
 	for (int i = 0; i < gen->y; ++i) {
@@ -68,7 +73,6 @@ void TestGame::genLevel()
 		lines.push_back(std::make_shared<Line2i>(Point2(x, gen->y * dist), Point2(x + dist, gen->y * dist)));
 	}
 
-	keys = 5;
 
 	//generate exit position
 	int gridX = getRandom(0, mazeW - 1);
@@ -86,8 +90,7 @@ TestGame::~TestGame() {
 
 void TestGame::handleKeyEvents() {
 	int speed = 3;
-	//bool to check if the player has moved, to use in animation
-	bool moved = false;
+	moved = false;
 
 	if (eventSystem->isPressed(Key::W)) {
 		velocity.y = -speed;
@@ -166,10 +169,6 @@ void TestGame::update() {
 	light.x = box.x - 60;
 	light.y = box.y - 60;
 
-	if (keys == 0) {
-		genLevel();
-	}
-
 	checkAchievements();
 }
 
@@ -223,7 +222,7 @@ void TestGame::renderUI() {
 	gfx->drawText(levelStr, 780 - levelStr.length() * 20, 100);
 
 	if (canExit())
-		gfx->drawText("Press Spacebar to complete level", 250, 250);
+		gfx->drawText("Press Spacebar to complete level", 100, 400);
 
 	//call to function for displaying over the game UI
 	AbstractGame::renderUI();
@@ -239,6 +238,22 @@ void TestGame::checkAchievements()
 	if (score == 5)
 	{
 		achievements->gain("5fish");
+	}
+	if (score == 15)
+	{
+		achievements->gain("15fish");
+	}
+	if (moved)
+	{
+		achievements->gain("Moved");
+	}
+	if (level > 1)
+	{
+		achievements->gain("Level1");
+	}
+	if (level > 5)
+	{
+		achievements->gain("Level5");
 	}
 }
 
