@@ -30,9 +30,10 @@ class TestGame : public AbstractGame {
 		std::vector<std::shared_ptr<Line2i>> lines;
 		std::vector<std::shared_ptr<GameKey>> points;
 
+		Point2 exit;
 
 		/* GAMEPLAY */
-		int score, keys, lives;
+		int score, keys, lives, level;
 		bool gameWon;
 
 		void updatePlayerFrame();
@@ -42,9 +43,11 @@ class TestGame : public AbstractGame {
 		void drawPlayer();
 		void renderUI();
 		void checkAchievements();
+		bool canExit();
 
 	public:
 		TestGame();
+		void genLevel();
 		~TestGame();
 };
 

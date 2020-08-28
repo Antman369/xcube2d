@@ -1,7 +1,9 @@
 #include "TestGame.h"
 #include "SDL_image.h"
 
-TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(false), box(5, 5, 30, 30), light(0, 0, 150, 150) {
+TestGame::TestGame() :
+	AbstractGame(), score(0), lives(3), keys(5), level(1),
+	gameWon(false), box(5, 5, 30, 30), light(0, 0, 150, 150), gen(nullptr) {
 	TTF_Font * font = ResourceManager::loadFont("res/fonts/arial.ttf", 36);
 	gfx->useFont(font);
 	gfx->setVerticalSync(true);
@@ -12,9 +14,25 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 	//adding image for keys
 	keySprite = gfx->loadTexture("res/assets/fish.png");
 
-	gen = new MazeGenerator(10, 10);
-	gen->generateMaze(0, 0);
+	genLevel();
 
+	//defining and adding the unique achievements
+	achievements->add("1fish", "Essential Energy!", "Eat 1 fish");
+	achievements->add("5fish", "Someone's Hungry!", "Eat 5 fish");
+}
+
+void TestGame::genLevel()
+{
+	if (gen)
+	{
+		delete gen;
+		lines.clear();
+		points.clear();
+	}
+	const int mazeW = 10, mazeH = 10;
+	gen = new MazeGenerator(mazeW, mazeH);
+	gen->generateMaze(0, 0);
+	
 	int dist = 40;
 
 	for (int i = 0; i < gen->y; ++i) {
@@ -26,23 +44,23 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 			int x = j * dist;
 
 			if ((gen->maze[j][i] & 1) == 0) {
-				lines.push_back(std::make_shared<Line2i>(Point2(x, y), Point2(x+dist, y)));
+				lines.push_back(std::make_shared<Line2i>(Point2(x, y), Point2(x + dist, y)));
 			}
 
 			if ((gen->maze[j][i] & 8) == 0) {
-				lines.push_back(std::make_shared<Line2i>(Point2(x, y), Point2(x, y+dist)));
+				lines.push_back(std::make_shared<Line2i>(Point2(x, y), Point2(x, y + dist)));
 			}
 
 			if (keys > 0 && getRandom(0, 100) <= 5) {
 				std::shared_ptr<GameKey> k = std::make_shared<GameKey>();
 				k->alive = true;
-				k->pos = Point2(j*dist + dist/2, i*dist + dist/2);
+				k->pos = Point2(j * dist + dist / 2, i * dist + dist / 2);
 				points.push_back(k);
 				keys--;
 			}
 		}
 
-		lines.push_back(std::make_shared<Line2i>(Point2(gen->x*dist, y), Point2(gen->x*dist, y + dist)));
+		lines.push_back(std::make_shared<Line2i>(Point2(gen->x * dist, y), Point2(gen->x * dist, y + dist)));
 	}
 
 	for (int j = 0; j < gen->x; j++) {
@@ -52,9 +70,14 @@ TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(fals
 
 	keys = 5;
 
-	//defining and adding the unique achievements
-	achievements->add("1fish", "Essential Energy!", "Eat 1 fish");
-	achievements->add("5fish", "Someone's Hungry!", "Eat 5 fish");
+	//generate exit position
+	int gridX = getRandom(0, mazeW - 1);
+	int gridY = getRandom(0, mazeH - 1);
+	exit = { gridX * dist + dist / 2, gridY * dist + dist / 2 };
+
+	//resetting player position to ensure not in between 2 grid positions
+	box.x = (box.x / dist) * dist + 5;
+	box.y = (box.y / dist) * dist + 5;	
 }
 
 TestGame::~TestGame() {
@@ -88,6 +111,12 @@ void TestGame::handleKeyEvents() {
 		velocity.x = speed;
 		facing = velocity;
 		moved = true;
+	}
+
+	if (canExit() && eventSystem->isPressed(Key::SPACE))
+	{
+		level++;
+		genLevel();
 	}
 
 	if (moved)
@@ -138,7 +167,7 @@ void TestGame::update() {
 	light.y = box.y - 60;
 
 	if (keys == 0) {
-		gameWon = true;
+		genLevel();
 	}
 
 	checkAchievements();
@@ -150,15 +179,21 @@ void TestGame::render() {
 		if (light.intersects(*line))
 			gfx->drawLine(line->start, line->end);
 	
-	drawPlayer();
+	if (light.contains(exit))
+	{
+		float radius = 15;
+		gfx->setDrawColor(SDL_COLOR_GREEN);
+		gfx->drawCircle(exit, radius);
+	}
 
-	gfx->setDrawColor(SDL_COLOR_YELLOW);
 	for (auto key : points)
 		if (key->alive && light.contains(key->pos))
 		{
 			SDL_Rect dest = { key->pos.x - 16, key->pos.y - 16, 32, 32 };
 			gfx->drawTexture(keySprite, &dest);
 		}
+
+	drawPlayer();
 }
 
 //function to draw the correct player frame to the screen, depending on direction
@@ -182,11 +217,13 @@ void TestGame::drawPlayer()
 
 void TestGame::renderUI() {
 	gfx->setDrawColor(SDL_COLOR_AQUA);
-	std::string scoreStr = std::to_string(score);
-	gfx->drawText(scoreStr, 780 - scoreStr.length() * 50, 25);
+	std::string scoreStr = "Score: " + std::to_string(score);
+	gfx->drawText(scoreStr, 780 - scoreStr.length() * 20, 25);
+	std::string levelStr = "Level: " + std::to_string(level);
+	gfx->drawText(levelStr, 780 - levelStr.length() * 20, 100);
 
-	if (gameWon)
-		gfx->drawText("YOU WON", 250, 250);
+	if (canExit())
+		gfx->drawText("Press Spacebar to complete level", 250, 250);
 
 	//call to function for displaying over the game UI
 	AbstractGame::renderUI();
@@ -203,4 +240,9 @@ void TestGame::checkAchievements()
 	{
 		achievements->gain("5fish");
 	}
+}
+
+bool TestGame::canExit()
+{
+	return box.contains(exit);
 }

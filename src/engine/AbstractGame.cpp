@@ -109,6 +109,7 @@ void AbstractGame::renderUI()
 			y += (achievementPopUpTime - displayAchievementTimer) * 2;
 		else if (displayAchievementTimer > achievementDisplayTime - achievementPopUpTime)
 			y += (achievementPopUpTime - (achievementDisplayTime - displayAchievementTimer)) * 2;
+
 		gfx->drawText(displayAchievement.title, 100, y);
 		gfx->drawText(displayAchievement.description, 100, y + 50);
 	}
