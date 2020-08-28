@@ -42,6 +42,7 @@ class TestGame : public AbstractGame {
 		void drawPlayer();
 		void renderUI();
 		void checkAchievements();
+
 	public:
 		TestGame();
 		~TestGame();

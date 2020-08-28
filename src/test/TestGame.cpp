@@ -2,13 +2,14 @@
 #include "SDL_image.h"
 
 TestGame::TestGame() : AbstractGame(), score(0), lives(3), keys(5), gameWon(false), box(5, 5, 30, 30), light(0, 0, 150, 150) {
-	TTF_Font * font = ResourceManager::loadFont("res/fonts/arial.ttf", 72);
+	TTF_Font * font = ResourceManager::loadFont("res/fonts/arial.ttf", 36);
 	gfx->useFont(font);
 	gfx->setVerticalSync(true);
 
-	//adding image to player
+	//adding image for player
 	playerSprite = gfx->loadTexture("res/assets/cat.png");
 
+	//adding image for keys
 	keySprite = gfx->loadTexture("res/assets/fish.png");
 
 	gen = new MazeGenerator(10, 10);
@@ -60,20 +61,9 @@ TestGame::~TestGame() {
 	delete gen;
 }
 
-void TestGame::updatePlayerFrame()
-{
-	--playerAnimTimer;
-	if (playerAnimTimer <= 0)
-	{
-		playerAnimTimer = 5;
-		++playerAnimFrame;
-		if (playerAnimFrame >= 3)
-			playerAnimFrame = 0;
-	}
-}
-
 void TestGame::handleKeyEvents() {
 	int speed = 3;
+	//bool to check if the player has moved, to use in animation
 	bool moved = false;
 
 	if (eventSystem->isPressed(Key::W)) {
@@ -102,6 +92,19 @@ void TestGame::handleKeyEvents() {
 
 	if (moved)
 		updatePlayerFrame();
+}
+
+//function to handle the animation of playerSprite
+void TestGame::updatePlayerFrame()
+{
+	--playerAnimTimer;
+	if (playerAnimTimer <= 0)
+	{
+		playerAnimTimer = 5;
+		++playerAnimFrame;
+		if (playerAnimFrame >= 3)
+			playerAnimFrame = 0;
+	}
 }
 
 void TestGame::update() {
@@ -158,6 +161,7 @@ void TestGame::render() {
 		}
 }
 
+//function to draw the correct player frame to the screen, depending on direction
 void TestGame::drawPlayer()
 {
 	int frameX = 32 * playerAnimFrame;
